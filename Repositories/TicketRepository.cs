@@ -8,13 +8,20 @@ namespace CantineAPI.Repositories
 
         public void AddTicket(Ticket ticket)
         {
-            ticket.Id = Tickets.Count + 1;
+            ticket.Id = ToGuid(Tickets.Count + 1);
             Tickets.Add(ticket);
         }
 
-        public List<Ticket> GetTicketsByClientId(int clientId)
+        public List<Ticket> GetTicketsByClientId(Guid clientId)
         {
             return Tickets.Where(t => t.ClientId == clientId).ToList();
+        }
+
+        public static Guid ToGuid(int value)
+        {
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes, 0);
+            return new Guid(bytes);
         }
     }
 }

@@ -4,7 +4,10 @@ namespace CantineAPI.Repositories
 {
     public interface IClientRepository
     {
-        Client GetClientById(int clientId);
+        Client GetClientById(Guid clientId);
+        public List<Client> GetAllClient();
         void UpdateClient(Client client);
+        void Add(Client client);
+        
     }
 }

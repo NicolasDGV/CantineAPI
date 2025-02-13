@@ -2,6 +2,7 @@ using CantineAPI.Models;
 using CantineAPI.Models.Enums;
 using CantineAPI.Repositories;
 using CantineAPI.Exceptions;
+using CantineAPI.DTOs;
 
 namespace CantineAPI.Services
 {
@@ -18,20 +19,37 @@ namespace CantineAPI.Services
             _ticketRepository = ticketRepository;
         }
 
-        public Client CreditAccount(int clientId, decimal montant)
+        public Client CreateClient(ClientDto dto)
         {
-            var client = _clientRepository.GetClientById(clientId);
-            if (client == null)
+            var client = new Client
             {
-                throw new NotFoundException("Client non trouvé");
-            }
+                Id                  = Guid.NewGuid(),
+                Name                = dto.Name,
+                ClientType          = dto.Type,
+                BudgetCantine       = dto.BudgetCantine
+            };
 
-            client.BudgetCantine += montant;
-            _clientRepository.UpdateClient(client);
+            _clientRepository.Add(client);
             return client;
         }
 
-        public Ticket Pay(int clientId, List<int> repasIds)
+        public Client? GetClientById(Guid id) => _clientRepository.GetClientById(id);
+
+
+        public bool CreditAccount(Guid clientId, decimal amount)
+        {
+            var client = _clientRepository.GetClientById(clientId);
+            if (client == null)
+            {
+                return false;
+            }
+
+            client.BudgetCantine += amount;
+            _clientRepository.UpdateClient(client);
+            return true;
+        }
+
+        public Ticket Pay(Guid clientId, TicketDto ticketDto)
         {
             var client = _clientRepository.GetClientById(clientId);
             if (client == null)
@@ -39,11 +57,11 @@ namespace CantineAPI.Services
                 throw new NotFoundException("Client non trouvé");
             }
 
-            var repasSelectionnes = _repasRepository.GetRepasByIds(repasIds);
+            var repasSelectionnes = _repasRepository.GetRepasByIds(ticketDto.Repas.Select(c => c.Id).ToList());
 
             bool fullMeal = TicketContainsFullMeal(repasSelectionnes);
             
-            var total = fullMeal ? 10m : repasSelectionnes.Sum(r => r.Prix);
+            var total = fullMeal ? 10m : repasSelectionnes.Sum(r => r.Price);
             var reduction = GetReduction(client, total);
 
             if (client.BudgetCantine < total)
@@ -66,9 +84,14 @@ namespace CantineAPI.Services
             return ticket;
         }
 
-        public List<Ticket> GetTicketsByClientId(int clientId)
+        public List<Ticket> GetTicketsByClientId(Guid clientId)
         {
             return _ticketRepository.GetTicketsByClientId(clientId);
+        }
+
+        public List<Client> GetAllClient()
+        {
+            return _clientRepository.GetAllClient();
         }
 
         private static decimal GetReduction(Client client, decimal total)

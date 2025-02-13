@@ -5,6 +5,6 @@ namespace CantineAPI.Repositories
     public interface ITicketRepository
     {
         void AddTicket(Ticket ticket);
-        List<Ticket> GetTicketsByClientId(int clientId);
+        List<Ticket> GetTicketsByClientId(Guid clientId);
     }
 }

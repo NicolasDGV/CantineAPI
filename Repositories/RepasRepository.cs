@@ -6,9 +6,9 @@ namespace CantineAPI.Repositories
     {
         private static List<Repas> RepasDisponibles = new List<Repas>
         {
-            new Repas { Id = 1, Nom = "Pizza", Prix = 5.00m },
-            new Repas { Id = 2, Nom = "Salade", Prix = 3.50m },
-            new Repas { Id = 3, Nom = "Dessert", Prix = 2.00m }
+            new Repas { Id = 1, Name = "Pizza", Price = 5.00m },
+            new Repas { Id = 2, Name = "Salade", Price = 3.50m },
+            new Repas { Id = 3, Name = "Dessert", Price = 2.00m }
         };
 
         public List<Repas> GetRepasByIds(List<int> repasIds)

@@ -1,11 +1,15 @@
 using CantineAPI.Models;
+using CantineAPI.DTOs;
 
 namespace CantineAPI.Services
 {
     public interface ICantineService
     {
-        Client CreditAccount(int clientId, decimal montant);
-        Ticket Pay(int clientId, List<int> repasIds);
-        List<Ticket> GetTicketsByClientId(int clientId);
+        public Client CreateClient(ClientDto dto);
+        public Client? GetClientById(Guid id);
+        bool CreditAccount(Guid clientId, decimal montant);
+        Ticket Pay(Guid clientId, TicketDto ticketDto);
+        List<Ticket> GetTicketsByClientId(Guid clientId);
+        public List<Client> GetAllClient();
     }
 }

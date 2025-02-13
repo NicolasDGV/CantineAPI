@@ -6,10 +6,10 @@ namespace CantineAPI.Repositories
     {
         private static List<Client> Clients = new List<Client>
         {
-            new Client { Id = 1, Nom = "Jean Dupont", BudgetCantine = 100.00m }
+            new Client { Id = new System.Guid(), Name = "Jean Dupont", BudgetCantine = 100.00m }
         };
 
-        public Client GetClientById(int clientId)
+        public Client GetClientById(Guid clientId)
         {
             return Clients.FirstOrDefault(c => c.Id == clientId);
         }
@@ -19,14 +19,14 @@ namespace CantineAPI.Repositories
             return Clients.ToList();
         }
 
-        public virtual void Add(Client client) => Clients.Add(client);
+        public void Add(Client client) => Clients.Add(client);
 
         public void UpdateClient(Client client)
         {
             var existingClient = Clients.FirstOrDefault(c => c.Id == client.Id);
             if (existingClient != null)
             {
-                existingClient.Nom = client.Nom;
+                existingClient.Name = client.Name;
                 existingClient.BudgetCantine = client.BudgetCantine;
             }
         }
